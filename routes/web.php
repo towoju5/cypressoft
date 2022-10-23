@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WalletsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -21,9 +22,17 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+
+Route::get('/dashboard', [HomeController::class, 'index'])->name('users.dashboard');
 
 Route::get('/q', [WalletsController::class, 'index'])->name('q');
 Route::get('/create-address', [WalletsController::class, 'create'])->name('create');
 Route::get('/list', [WalletsController::class, 'listTransfers'])->name('list');
+
+Route::get('/withdraw', [WalletsController::class, 'withdrawal'])->name('users.withdrawal');
+Route::get('/coins', [WalletsController::class, 'coins'])->name('users.coin');
+
+/** Change Password */
+Route::get('/change-password', [WalletsController::class, 'coins'])->name('change.password');
