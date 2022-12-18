@@ -17,7 +17,7 @@ class EventsController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->has('date_from') && !empty($request->date_from)) {
+            if ($request->has('date_from') && !empty($request->date_from)) :
                 if ($request->date_from > $request->date_to) {
                     $response = get_error_response(400, 'Invalid request', ['error' => 'Date from should be earlier']);
                     return response()->json($response, 400);
@@ -25,22 +25,23 @@ class EventsController extends Controller
                 
                 $date_from = Carbon::parse($request->date_from);
 
-                if($request->has('date_to') && !empty($request->date_to)){
+                if($request->has('date_to') && !empty($request->date_to)):
                     $date_to = Carbon::parse($request->date_to)->addDay();
-                } else {
+                else :
                     $date_to = Carbon::now()->addDay();
-                }
+                endif;
 
                 $events = Events::where('user_id', 1)
                     ->whereBetween('created_at', [$date_from, $date_to])
+                    ->unique()
                     ->get()
                     ->makeHidden(['created_at', 'updated_at'])
                     ->toArray();
                 $response = get_success_response($events);
                 return response()->json($response, 200);
-            }
+            endif;
 
-            $events = Events::paginate(10)->toArray();
+            $events = Events::unique()->paginate(10)->toArray();
             return response()->json($events);
 
         } catch (\Throwable $th) {
@@ -60,7 +61,7 @@ class EventsController extends Controller
         try {
             $date_from = Carbon::parse($request->date_from);
             $date_to = Carbon::parse($request->date_to)->addDay();
-            $events = Events::whereBetween('created_at', [$date_from, $date_to])
+            $events = Events::where('user_id', $request->user->id)->whereBetween('created_at', [$date_from, $date_to])
                 ->get()
                 ->makeHidden(['created_at', 'updated_at'])
                 ->toArray();
@@ -96,12 +97,24 @@ class EventsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $slug)
     {
-        //
+        $event = Events::where('slug', $slug)->count();
+        if($event < 1) :
+            $result = get_error_response(404, "Event not found",  ["error" => "Event not found"]);
+            return response()->json($result , 404);
+        else if($event > 0) :
+            $event = Events::where(['user_id', $request->user->id])->where('slug', $slug)->first();
+            $result = get_success_response($event);
+            return response()->json($result , 200);
+        else :
+            $event = Events::where('user_id', 0)->where('slug', $slug)->first();
+            $result = get_success_response($event);
+            return response()->json($result, 200);
+        endif;
     }
 
     /**

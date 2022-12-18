@@ -24,17 +24,16 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('home', [HomeController::class, 'index'])->name('home');
-Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('home', [HomeController::class, 'index'])->name('home');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('events/list', [EventsController::class, 'index'])->name('events.list');
+    Route::get('events/calender', [EventsController::class, 'index'])->name('events');
+    Route::get('events/edit/{event_id}', [EventsController::class, 'edit'])->name('event.edit');
+    Route::post('events/update/{event_id}', [EventsController::class, 'update'])->name('event.update');
+    Route::post('events', [EventsController::class, 'store'])->name('event.post');
 
-
-Route::get('events/list',               [EventsController::class, 'index'])->name('events.list');
-Route::get('events/calender',           [EventsController::class, 'index'])->name('events');
-Route::get('events/edit/{event_id}',    [EventsController::class, 'edit'])->name('event.edit');
-Route::post('events/update/{event_id}', [EventsController::class, 'update'])->name('event.update');
-Route::post('events',                   [EventsController::class, 'store'])->name('event.post');
-
-
-Route::get('profile',   [HomeController::class, 'index'])->name('change.password');
-// Route::get('logout',    [HomeController::class, 'index'])->name('logout');
+    Route::get('profile', [HomeController::class, 'index'])->name('change.password');
+});
+Route::get('logout',    [HomeController::class, 'index'])->name('logout');

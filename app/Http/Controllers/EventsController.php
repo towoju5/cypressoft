@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Events;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class EventsController extends Controller
 {
@@ -52,12 +53,17 @@ class EventsController extends Controller
         } 
         $event = new Events();
         $event->title         = $request->event_title;
+        $event->user_id       = $request->user_id;
+        $event->slug          = Str::slug($request->event_title);
         $event->start         = $request->event_start;
         $event->end           = $request->event_end;
         $event->image         = save_image('events', $request->event_image);
         $event->description   = $request->event_description;
-        if($event->save())
+        if($event->save()):
             return back()->with('success', "Event added successfully");
+        else :
+            return back()->with('error', "Error encountered while saving event");
+        endif;
     }
 
     /**
