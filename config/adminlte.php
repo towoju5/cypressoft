@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'cypressoft',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -45,12 +45,12 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    'logo' => '<b>Cypres</b>Soft',
+    'logo_img' => 'https://www.cypressoft.com/favicon.ico',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'AdminLTE',
+    'logo_img_alt' => 'CypresSoft',
 
     /*
     |--------------------------------------------------------------------------
@@ -226,15 +226,15 @@ return [
 
     'menu' => [
         // Navbar items:
-        // [
-        //     'type'         => 'navbar-search',
-        //     'text'         => 'search',
-        //     'topnav_right' => true,
-        // ],
-        // [
-        //     'type'         => 'fullscreen-widget',
-        //     'topnav_right' => true,
-        // ],
+        [
+            'type'         => 'navbar-search',
+            'text'         => 'search',
+            'topnav_right' => true,
+        ],
+        [
+            'type'         => 'fullscreen-widget',
+            'topnav_right' => true,
+        ],
 
         // Sidebar items:
         [
@@ -245,26 +245,29 @@ return [
         
         [
             'text'        => 'Dashboard',
-            'route'       => 'users.dashboard',
+            'route'       => 'dashboard',
             'icon'        => 'fas fa-monitor',
         ],
-        [
-            'text'        => 'Withdrawal',
-            'route'       => 'users.withdrawal',
-            'icon'        => 'fas fa-home',
-        ],
         
-        ['header' => 'account_settings'],
+        ['header' => "Todo's"],
         [
-            'text' => 'profile',
-            'route'  => 'users.coin',
-            'icon' => 'fas fa-fw fa-user',
+            'text' => 'Events',
+            'route'  => 'events',
+            'icon' => 'fas fa-fw fa-calendar',
         ],
+        [
+            'text' => 'All Events',
+            'route'  => 'events.list',
+            'icon' => 'fas fa-fw fa-list',
+        ],
+        ['header' => "Settings"],
         [
             'text' => 'change_password',
             'route'  => 'change.password',
             'icon' => 'fas fa-fw fa-lock',
         ],
+
+        ['header' => "Others"],
         [
             'text'  => 'Logout',
             'route' => 'logout',
@@ -353,12 +356,27 @@ return [
             ],
         ],
         'Sweetalert2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
+                ],
+            ],
+        ],
+        'fullcalendar' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '/vendor/fullcalendar/main.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '/vendor/fullcalendar/main.min.css',
                 ],
             ],
         ],
@@ -374,6 +392,36 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js',
+                ],
+            ],
+        ],
+        'summernote' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '/vendor/summernote/summernote.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '/vendor/summernote/summernote.min.js',
+                ],
+            ],
+        ],
+        'daterangepicker' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '/vendor/daterangepicker/daterangepicker.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '/vendor/daterangepicker/daterangepicker.js',
                 ],
             ],
         ],

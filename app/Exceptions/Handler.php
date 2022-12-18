@@ -21,11 +21,7 @@ class Handler extends ExceptionHandler
      *
      * @var array<int, string>
      */
-    protected $dontFlash = [
-        'current_password',
-        'password',
-        'password_confirmation',
-    ];
+    protected $dontFlash = ['current_password', 'password', 'password_confirmation'];
 
     /**
      * Register the exception handling callbacks for the application.
@@ -34,6 +30,22 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
+        // $this->renderable(function (Throwable $e, $request) {
+        //     if(request()->expectsJson()){
+        //         $result = $e->getMessage();
+        //         return response()->json(
+        //             [
+        //                 'status' => 'error',
+        //                 'code' => $e->getCode(),
+        //                 'message' => "Oops we've hit a snag.",
+        //                 'data' => [
+        //                     'error' => $request,
+        //                 ],
+        //             ],
+        //         );
+        //     }
+        // });
+
         $this->reportable(function (Throwable $e) {
             //
         });

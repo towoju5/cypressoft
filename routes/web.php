@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WalletsController;
 use Illuminate\Support\Facades\Auth;
@@ -22,17 +24,17 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('home', [HomeController::class, 'index'])->name('home');
+Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
-Route::get('/dashboard', [HomeController::class, 'index'])->name('users.dashboard');
 
-Route::get('/q', [WalletsController::class, 'index'])->name('q');
-Route::get('/create-address', [WalletsController::class, 'create'])->name('create');
-Route::get('/list', [WalletsController::class, 'listTransfers'])->name('list');
+Route::get('events/list',               [EventsController::class, 'index'])->name('events.list');
+Route::get('events/calender',           [EventsController::class, 'index'])->name('events');
+Route::get('events/edit/{event_id}',    [EventsController::class, 'edit'])->name('event.edit');
+Route::post('events/update/{event_id}', [EventsController::class, 'update'])->name('event.update');
+Route::post('events',                   [EventsController::class, 'store'])->name('event.post');
 
-Route::get('/withdraw', [WalletsController::class, 'withdrawal'])->name('users.withdrawal');
-Route::get('/coins', [WalletsController::class, 'coins'])->name('users.coin');
 
-/** Change Password */
-Route::get('/change-password', [WalletsController::class, 'coins'])->name('change.password');
+Route::get('profile',   [HomeController::class, 'index'])->name('change.password');
+// Route::get('logout',    [HomeController::class, 'index'])->name('logout');

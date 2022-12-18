@@ -25,8 +25,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $coins = Coins::where('user_id', Auth::id())->get();
-        return view('home', compact('coins'));
+        return view('home');
     }
 
 }
