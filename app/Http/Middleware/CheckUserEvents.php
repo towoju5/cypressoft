@@ -18,6 +18,7 @@ class CheckUserEvents
      */
     public function handle(Request $request, Closure $next)
     {
+        // return response()->json($request->user);
         return $next($request);
     }
 }

@@ -72,9 +72,21 @@ class EventsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $slug)
     {
-        //
+        $event = Events::where('slug', $slug)->count();
+        if($event < 1) :
+            $result = get_error_response(404, "Event not found",  ["error" => "Event not found"]);
+            return response()->json($result , 404);
+        else if($event > 0) :
+            $event = Events::where(['user_id', $request->user->id])->where('slug', $slug)->first();
+            $result = get_success_response($event);
+            return response()->json($result , 200);
+        else :
+            $event = Events::where('user_id', 0)->where('slug', $slug)->first();
+            $result = get_success_response($event);
+            return response()->json($result, 200);
+        endif;
     }
 
     /**

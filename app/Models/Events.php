@@ -9,6 +9,10 @@ class Events extends Model
 {
     use HasFactory;
 
+    protected $hidden = [
+        'id',
+    ];
+
     public function user(){
         return $this->hasMany(User::class);
     }

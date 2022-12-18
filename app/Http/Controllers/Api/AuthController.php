@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -19,20 +21,41 @@ class AuthController extends Controller
     public function process_login(Request $request)
     {
         $this->validate($request, [
-            'login_email' => 'required|email',
-            'password' => 'required',
+            'email' => 'required|email',
+            'password' => 'required'
         ]);
+        try {
+            $validateUser = Validator::make(
+                $request->all(),
+                []
+            );
 
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password,
-        ];
-        
-        if (auth()->attempt($credentials, true)) {
-            return true;
-        } else {
-            $result = get_error_response(401, 'Unathorized login', ['error' => 'Invalid login credentials']);
-            return response()->json($result);
+            if ($validateUser->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'validation error',
+                    'errors' => $validateUser->errors()
+                ], 401);
+            }
+
+            if (!Auth::attempt($request->only(['email', 'password']))) {
+                $result = get_error_response(401, 'Invalid login credentials', ['error' => 'Email & Password does not match with our record.']);
+                return response()->json($result, 401);
+            }
+
+            $user = User::where('email', $request->email)->first();
+            return response()->json([
+                'status' => true,
+                'message' => 'User Logged In Successfully',
+                'data'      =>  [
+                    'token' => $user->auth_token,
+                ]
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
         }
     }
 
@@ -40,7 +63,7 @@ class AuthController extends Controller
     {
         $this->validate($request, [
             'name'      => 'required',
-            'email'     => 'required|unique:users',
+            'email'     => 'required|email|unique:users',
             'password'  => 'required|min:6',
         ]);
 
@@ -59,6 +82,8 @@ class AuthController extends Controller
                 'token_type' => 'Bearer',
                 'data' => $user,
             ];
+            $user->auth_token = $token[1];
+            $user->save();
             return $result;
         });
         return response()->json($process);

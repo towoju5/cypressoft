@@ -21,15 +21,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::group([], function(){
-    Route::post('login',    [AuthController::class, 'process_login']);
-    Route::post('register', [AuthController::class, 'process_register']);
-    
-    /**
-     * Authenticated Routes
-     */
-    Route::group(['middleware' => 'auth:sanctum'], function(){
-        Route::get('events', [EventsController::class, 'index']);
-        Route::get('events/filter', [EventsController::class, 'filter']);
-    });
+Route::post('login',        [AuthController::class, 'process_login']);
+Route::post('register',     [AuthController::class, 'process_register']);
+
+/**
+ * Authenticated Routes
+ */
+Route::group(['middleware' => 'auth:sanctum'], function(){
+    Route::get('events', [EventsController::class, 'index']);
+    Route::get('event/{slug}', [EventsController::class, 'show']);
 });

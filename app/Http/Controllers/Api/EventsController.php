@@ -31,17 +31,16 @@ class EventsController extends Controller
                     $date_to = Carbon::now()->addDay();
                 endif;
 
-                $events = Events::where('user_id', 1)
+                $events = Events::groupBy('slug')
                     ->whereBetween('created_at', [$date_from, $date_to])
-                    ->unique()
                     ->get()
-                    ->makeHidden(['created_at', 'updated_at'])
+                    ->makeHidden(['created_at', 'updated_at', 'user_id', 'description'])
                     ->toArray();
                 $response = get_success_response($events);
                 return response()->json($response, 200);
             endif;
 
-            $events = Events::unique()->paginate(10)->toArray();
+            $events = Events::paginate(10)->toArray();
             return response()->json($events);
 
         } catch (\Throwable $th) {
@@ -61,9 +60,10 @@ class EventsController extends Controller
         try {
             $date_from = Carbon::parse($request->date_from);
             $date_to = Carbon::parse($request->date_to)->addDay();
-            $events = Events::where('user_id', $request->user->id)->whereBetween('created_at', [$date_from, $date_to])
+            $events = Events::where('user_id', $request->user->id)
+                ->whereBetween('created_at', [$date_from, $date_to])
                 ->get()
-                ->makeHidden(['created_at', 'updated_at'])
+                ->makeHidden(['created_at', 'updated_at', 'user_id'])
                 ->toArray();
             return get_success_response($events);
         } catch (\Throwable $th) {
@@ -106,7 +106,7 @@ class EventsController extends Controller
         if($event < 1) :
             $result = get_error_response(404, "Event not found",  ["error" => "Event not found"]);
             return response()->json($result , 404);
-        else if($event > 0) :
+        elseif($event > 0) :
             $event = Events::where(['user_id', $request->user->id])->where('slug', $slug)->first();
             $result = get_success_response($event);
             return response()->json($result , 200);
