@@ -260,12 +260,7 @@ return [
             'route'  => 'events.list',
             'icon' => 'fas fa-fw fa-list',
         ],
-        ['header' => "Settings"],
-        [
-            'text' => 'change_password',
-            'route'  => 'change.password',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
+        
 
         ['header' => "Others"],
         [

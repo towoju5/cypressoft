@@ -20,14 +20,13 @@ class AuthController extends Controller
 
     public function process_login(Request $request)
     {
-        $this->validate($request, [
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
         try {
             $validateUser = Validator::make(
                 $request->all(),
-                []
+                [
+                    'password'  => 'required',
+                    'email'     => 'required|email',
+                ]
             );
 
             if ($validateUser->fails()) {
@@ -61,11 +60,31 @@ class AuthController extends Controller
 
     public function process_register(Request $request)
     {
-        $this->validate($request, [
-            'name'      => 'required',
-            'email'     => 'required|email|unique:users',
-            'password'  => 'required|min:6',
-        ]);
+        $validateUser = Validator::make(
+            $request->all(),
+            [
+                'name'      => 'required',
+                'email'     => 'required|email|unique:users',
+                'password'  => 'min:6',
+                'password_confirmation' => 'required_with:password|same:password|min:6'
+            ]
+        );
+
+        if ($validateUser->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'validation error',
+                'errors' => $validateUser->errors()
+            ], 401);
+        }
+
+        if ($validateUser->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'validation error',
+                'errors' => $validateUser->errors()
+            ], 401);
+        }
 
         $data = [
             'name'      =>  $request->name,

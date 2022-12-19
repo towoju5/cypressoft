@@ -43,6 +43,16 @@
                             <input type="text" name="event_title" id="event_title" class="form-control">
                         </div>
                         <div class="form-group">
+                            <label for="event_title">Event User</label>
+                            <select name="user_id" id="user_id" class="form-control">
+                                <option value="" disabled selected> -- Select User -- </option>
+                                <option value="0"> All Users </option>
+                                @foreach ($users as $k => $user)
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="event_image">Event Image</label>
                             <input type="file" name="event_image" id="event_image" class="form-control">
                             <div class="text-center" id="imgPreview" style="display:none">
@@ -72,7 +82,6 @@
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-between">
-                        <button type="button" id="delete_event" class="btn btn-danger">Delete Event</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
@@ -81,6 +90,28 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="option" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">What will you like to do?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                        <button class="btn btn-primary btn-rounded">
+                            <i class="fa fa-edit"></i>
+                        </button>
+
+                        <button onclick="delete" class="ml-1 btn btn-danger btn-rounded">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('css')
@@ -121,7 +152,7 @@
                     $("#blah").attr('src', data.extendedProps.image)
                     $("#event_description").val(data.extendedProps.event_description)
                     $("#delete_event").show();
-                    $("#modelId").modal('show');
+                    $("#option").modal('show');
                 },
             })
             calendar.render()
@@ -137,5 +168,9 @@
                 blah.src = URL.createObjectURL(file)
             }
         }
+
+        $(".alert").delay(1000).slideUp(200, function() {
+            $(this).alert('close');
+        });
     </script>
 @stop

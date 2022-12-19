@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Auth::routes();
@@ -27,13 +27,14 @@ Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
     Route::get('home', [HomeController::class, 'index'])->name('home');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    Route::get('events/list', [EventsController::class, 'index'])->name('events.list');
+    Route::get('event/list', [EventsController::class, 'list'])->name('events.list');
     Route::get('events/calender', [EventsController::class, 'index'])->name('events');
-    Route::get('events/edit/{event_id}', [EventsController::class, 'edit'])->name('event.edit');
-    Route::post('events/update/{event_id}', [EventsController::class, 'update'])->name('event.update');
+    Route::get('event/edit/{event_id}', [EventsController::class, 'edit'])->name('event.edit');
+    Route::post('event/update/{event_id}', [EventsController::class, 'update'])->name('event.update');
     Route::post('events', [EventsController::class, 'store'])->name('event.post');
 
-    Route::get('profile', [HomeController::class, 'index'])->name('change.password');
+    Route::get('event/edit/{id}', [EventsController::class, 'edit'])->name('event.edit');
+    Route::post('event/update/{id}', [EventsController::class, 'update'])->name('event.update');
+    Route::get('event/delete/{id}', [EventsController::class, 'destroy'])->name('event.delete');
 });
-Route::get('logout',    [HomeController::class, 'index'])->name('logout');
+Route::get('logout',    [HomeController::class, 'logout'])->name('logout');
