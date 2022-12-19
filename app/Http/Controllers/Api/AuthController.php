@@ -47,7 +47,7 @@ class AuthController extends Controller
                 'status' => true,
                 'message' => 'User Logged In Successfully',
                 'data'      =>  [
-                    'token' => $user->auth_token,
+                    'token' => explode("|", $user->createToken('auth_token')->plainTextToken)[1] //$user->auth_token,
                 ]
             ], 200);
         } catch (\Throwable $th) {

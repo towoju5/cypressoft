@@ -60,7 +60,7 @@ class EventsController extends Controller
         try {
             $date_from = Carbon::parse($request->date_from);
             $date_to = Carbon::parse($request->date_to)->addDay();
-            $events = Events::where('user_id', $request->user->id)
+            $events = Events::where('user_id', auth('sanctum')->id())
                 ->whereBetween('created_at', [$date_from, $date_to])
                 ->get()
                 ->makeHidden(['created_at', 'updated_at', 'user_id'])
@@ -102,16 +102,20 @@ class EventsController extends Controller
      */
     public function show(Request $request, $slug)
     {
-        $event = Events::where('slug', $slug)->count();
-        if($event < 1) :
+        $event = Events::where('slug', $slug)->get();
+
+        if(empty($event)) :
             $result = get_error_response(404, "Event not found",  ["error" => "Event not found"]);
             return response()->json($result , 404);
-        elseif($event > 0) :
-            $event = Events::where(['user_id', $request->user->id])->where('slug', $slug)->first();
+        endif;
+
+
+        $event = Events::where(['user_id' => auth('sanctum')->id()])->where('slug', $slug)->first()->makeHidden(['user_id', 'updated_at'])->toArray();
+        if(!empty($event)) :
             $result = get_success_response($event);
             return response()->json($result , 200);
         else :
-            $event = Events::where('user_id', 0)->where('slug', $slug)->first();
+            $event = Events::where('user_id', 0)->where('slug', $slug)->first()->makeHidden(['user_id', 'updated_at'])->toArray();
             $result = get_success_response($event);
             return response()->json($result, 200);
         endif;
